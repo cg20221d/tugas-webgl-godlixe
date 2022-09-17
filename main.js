@@ -11,28 +11,28 @@ function getPt(p1, p2, precision){
     return p1+(p2-p1)*precision
 }
 
-function getBezier(vertices, bezierPoints1, bezierPoints2, precision, limit){
-    for (let i=0;i<limit;i+=precision){
-        // // Green line
-        xa = getPt( bezierPoints1[0] , bezierPoints1[2] , i );
-        ya = getPt( bezierPoints1[1] , bezierPoints1[3] , i );
-        xb = getPt( bezierPoints1[2] , bezierPoints1[4] , i );
-        yb = getPt( bezierPoints1[3] , bezierPoints1[5] , i );
+function getBezier(vertices, p, precision, limit, offsetX, offsetY){
+    // 0 1
+    // 2 3
+    // 4 5
+    // 6 7
+    let offsetP = []
 
-        // Black Dot
-        x = getPt( xa , xb , i );
-        y = getPt( ya , yb , i );
+    for(let i=0;i<8;i++){
+        if(i%2==0) offsetP.push(p[i]+offsetX)
+        else offsetP.push(p[i]+offsetY)
+    }
+
+    for (let t=0;t<limit;t+=precision){
+        temp = 1-t
+        x = (Math.pow(temp, 3)*p[0])+(3*Math.pow(temp,2)*t*p[2])+(3*temp*Math.pow(t, 2)*p[4])+(Math.pow(t, 3)*p[6])
+        y = (Math.pow(temp, 3)*p[1])+(3*Math.pow(temp,3)*t*p[3])+(3*temp*Math.pow(t, 2)*p[5])+(Math.pow(t, 3)*p[7])
         vertices.push(x)
         vertices.push(y)
 
-        xa = getPt( bezierPoints2[0] , bezierPoints2[2] , i );
-        ya = getPt( bezierPoints2[1] , bezierPoints2[3] , i );
-        xb = getPt( bezierPoints2[2] , bezierPoints2[4] , i );
-        yb = getPt( bezierPoints2[3] , bezierPoints2[5] , i );
+        y = (Math.pow(temp, 3)*offsetP[1])+(3*Math.pow(temp,3)*t*offsetP[3])+(3*temp*Math.pow(t, 2)*offsetP[5])+(Math.pow(t, 3)*offsetP[7])
+        x = (Math.pow(temp, 3)*offsetP[0])+(3*Math.pow(temp,2)*t*offsetP[2])+(3*temp*Math.pow(t, 2)*offsetP[4])+(Math.pow(t, 3)*offsetP[6])
 
-        // Black Dot
-        x = getPt( xa , xb , i );
-        y = getPt( ya , yb , i );
         vertices.push(x)
         vertices.push(y)
     }
@@ -80,13 +80,15 @@ function main(){
             0.415, -0.23,
 
             // E
+            0.6, -1.5,
+            1.5, -1.5,
+            1.5, -0.9,
+            0.6, -0.9,
+
+            // 0.6, -1.5,
             // 0.3, -1.0,
             // -0.1, -1.3,
-            // 0.6, -2,
-
-            // 0.5, -1.0,
-            // 0.2, -1.3,
-            // 0.8, -2
+            // 0.3, -1.8
         ];
 
     
@@ -94,21 +96,15 @@ function main(){
      offset(vertices, -0.5, 1., 0, 17)
      offset(vertices, -0.9, 1., 34, 8)
 
-     bezierPoints1 = [
-        0.3, -1.0,
-        -0.1, -1.3,
-        0.6, -2
+     bezierPoints = [
+        1.5, -1.5,
+        1.5, -0.9,
+        0.6, -0.9,
+        0.6, -1.5,
      ]
-
-     bezierPoints2 = [
-        0.5, -1.0,
-        0.2, -1.3,
-        0.8, -2
-     ]
-
-        getBezier(vertices, 
-            bezierPoints1, bezierPoints2, 0.01, 1)
-offset(vertices, -0.0, 1., 50, 1000)
+    //  getBezier(vertices, bezierPoints, 0.01, 1, 0.3, -0.0)
+    offset(vertices, -0.8, 1.5, 50, 1000)
+    console.log(vertices)
     var buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
@@ -160,6 +156,6 @@ offset(vertices, -0.0, 1., 50, 1000)
     gl.drawArrays(gl.LINE_LOOP, 17, 8)
 
     // E
-    gl.drawArrays(gl.TRIANGLE_STRIP, 25, 1000)
+    gl.drawArrays(gl.POINTS, 25, 1000)
 
 }
