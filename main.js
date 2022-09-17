@@ -1,5 +1,5 @@
 function offset(vertices, x, y, start, numPoints){
-    for(let i=start;i<start+numPoints*2;i++){
+    for(let i=start;i<start+(numPoints*2);i++){
         if(i%2==0){
             vertices[i]+=x
         }
@@ -7,6 +7,36 @@ function offset(vertices, x, y, start, numPoints){
     };
 }
 
+function getPt(p1, p2, precision){
+    return p1+(p2-p1)*precision
+}
+
+function getBezier(vertices, bezierPoints1, bezierPoints2, precision, limit){
+    for (let i=0;i<limit;i+=precision){
+        // // Green line
+        xa = getPt( bezierPoints1[0] , bezierPoints1[2] , i );
+        ya = getPt( bezierPoints1[1] , bezierPoints1[3] , i );
+        xb = getPt( bezierPoints1[2] , bezierPoints1[4] , i );
+        yb = getPt( bezierPoints1[3] , bezierPoints1[5] , i );
+
+        // Black Dot
+        x = getPt( xa , xb , i );
+        y = getPt( ya , yb , i );
+        vertices.push(x)
+        vertices.push(y)
+
+        xa = getPt( bezierPoints2[0] , bezierPoints2[2] , i );
+        ya = getPt( bezierPoints2[1] , bezierPoints2[3] , i );
+        xb = getPt( bezierPoints2[2] , bezierPoints2[4] , i );
+        yb = getPt( bezierPoints2[3] , bezierPoints2[5] , i );
+
+        // Black Dot
+        x = getPt( xa , xb , i );
+        y = getPt( ya , yb , i );
+        vertices.push(x)
+        vertices.push(y)
+    }
+}
 
 function main(){
     /** @type {HTMLCanvasElement} */
@@ -17,7 +47,7 @@ function main(){
     canvas.height = canvas.offsetWidth
 
     var gl = canvas.getContext('webgl')
-    var vertices_nrp= 
+    var vertices= 
         [
             // 4's outline
             -0.187, -0.22,
@@ -48,15 +78,40 @@ function main(){
             0.439, -0.36,
             0.416, -0.36,
             0.415, -0.23,
+
+            // E
+            // 0.3, -1.0,
+            // -0.1, -1.3,
+            // 0.6, -2,
+
+            // 0.5, -1.0,
+            // 0.2, -1.3,
+            // 0.8, -2
         ];
 
     
     // Preprocessing points
-     offset(vertices_nrp, -0.5, 1., 0, 17)
-     offset(vertices_nrp, -0.9, 1., 34, 50)
+     offset(vertices, -0.5, 1., 0, 17)
+     offset(vertices, -0.9, 1., 34, 8)
+
+     bezierPoints1 = [
+        0.3, -1.0,
+        -0.1, -1.3,
+        0.6, -2
+     ]
+
+     bezierPoints2 = [
+        0.5, -1.0,
+        0.2, -1.3,
+        0.8, -2
+     ]
+
+        getBezier(vertices, 
+            bezierPoints1, bezierPoints2, 0.01, 1)
+offset(vertices, -0.0, 1., 50, 1000)
     var buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices_nrp), gl.STATIC_DRAW)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
     //  Vertex shader
     var vertexShaderCode 
     = `
@@ -96,9 +151,15 @@ function main(){
     gl.clearColor(1.0, 1.0, 1.0, 1.0)
 
     gl.clear(gl.COLOR_BUFFER_BIT)
+
+    // 4
     gl.drawArrays(gl.LINE_LOOP, 0, 14)
     gl.drawArrays(gl.LINE_LOOP, 14, 3)
 
+    // 7
     gl.drawArrays(gl.LINE_LOOP, 17, 8)
+
+    // E
+    gl.drawArrays(gl.TRIANGLE_STRIP, 25, 1000)
 
 }
