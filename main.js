@@ -7,6 +7,13 @@ function offset(vertices, x, y, start, numPoints){
     };
 }
 
+function rectanglePoints(vertices, x1, y1, x2, y2){
+    vertices.push(x1, y1)
+    vertices.push(x1, y2)
+    vertices.push(x2, y1)
+    vertices.push(x2, y2)
+}
+
 function circlePoints(vertices, a, b, r, thickness, startAngle, endAngle){
     for(let i=startAngle;i<=endAngle;i+=10){
         radian = i*Math.PI/180
@@ -96,15 +103,12 @@ function main(){
      offset(vertices, -0.5, 1., 0, 17)
      offset(vertices, -0.9, 1., 34, 8)
 
-     bezierPoints = [
-        0.6, -1.5,
-            1.5, -1.5,
-            1.5, -0.9,
-            0.6, -0.9,
-     ]
-    //  getBezier(vertices, bezierPoints, 0.01, 1, 0.3, -0.0)
-    circlePoints(vertices, 0.5, -1.6, 0.09, 0.05, 90, 270)
-    offset(vertices, -0.5, 2.1, 50, 1000)
+    // e
+    circlePoints(vertices, 0.5, -1.6, 0.09, 0.03, 90, 270)
+    rectanglePoints(vertices, 0.5, -1.51, 0.6, -1.48)
+    rectanglePoints(vertices, 0.5, -1.69, 0.6, -1.72)
+    rectanglePoints(vertices, 0.39, -1.615, 0.6, -1.585)
+    offset(vertices, -0.5, 2.08, 50, 200)
     console.log(vertices)
     var buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
@@ -157,6 +161,9 @@ function main(){
     gl.drawArrays(gl.LINE_LOOP, 17, 8)
 
     // E
-    gl.drawArrays(gl.TRIANGLE_STRIP, 25, 1000)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 25, 38)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 63, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 67, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 71, 4)
 
 }
