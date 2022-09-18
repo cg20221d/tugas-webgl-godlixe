@@ -1,3 +1,5 @@
+// offset a set of vertices
+// from start to start+numpoints*2
 function offset(vertices, x, y, start, numPoints){
     for(let i=start;i<start+(numPoints*2);i++){
         if(i%2==0){
@@ -7,13 +9,26 @@ function offset(vertices, x, y, start, numPoints){
     };
 }
 
-function rectanglePoints(vertices, x1, y1, x2, y2){
+// Generates points for a rhombus from a given point
+// with height, width, and offset
+function rhombusPoints(vertices, x1, y1, height, width, offset){
     vertices.push(x1, y1)
-    vertices.push(x1, y2)
-    vertices.push(x2, y1)
-    vertices.push(x2, y2)
+    vertices.push(x1+width, y1)
+    vertices.push(x1+offset, y1+height)
+    vertices.push(x1+width+offset, y1+height)
 }
 
+// Generates rectangle points from a given point
+// with height and width
+function rectanglePoints(vertices, x1, y1, height, width){
+    vertices.push(x1, y1)
+    vertices.push(x1, y1+height)
+    vertices.push(x1+width, y1)
+    vertices.push(x1+width, y1+height)
+}
+
+// Generates circle points given it's center,
+// radius, thickness, and start angle
 function circlePoints(vertices, a, b, r, thickness, startAngle, endAngle){
     for(let i=startAngle;i<=endAngle;i+=10){
         radian = i*Math.PI/180
@@ -25,6 +40,8 @@ function circlePoints(vertices, a, b, r, thickness, startAngle, endAngle){
     }
 }
 
+// Generates a cubic bezier curve given 
+// set of control points and offsets
 function getBezier(vertices, p, precision, limit, offsetX, offsetY){
     let offsetP = []
 
@@ -88,28 +105,35 @@ function main(){
             0.439, -0.36,
             0.416, -0.36,
             0.415, -0.23,
-
-            // E
-            // 0.5, -1.6
-
-            // 0.6, -1.5,
-            // 0.3, -1.0,
-            // -0.1, -1.3,
-            // 0.3, -1.8
         ];
 
     
     // Preprocessing points
+
+    // 4 and 7
      offset(vertices, -0.5, 1., 0, 17)
-     offset(vertices, -0.9, 1., 34, 8)
+     offset(vertices, -1., 1., 34, 8)
 
     // e
     circlePoints(vertices, 0.5, -1.6, 0.09, 0.03, 90, 270)
-    rectanglePoints(vertices, 0.5, -1.51, 0.6, -1.48)
-    rectanglePoints(vertices, 0.5, -1.69, 0.6, -1.72)
-    rectanglePoints(vertices, 0.39, -1.615, 0.6, -1.585)
-    offset(vertices, -0.5, 2.08, 50, 200)
-    console.log(vertices)
+    rectanglePoints(vertices, 0.5, -1.51, 0.03, 0.1)
+    rectanglePoints(vertices, 0.39, -1.615, 0.03, 0.21)
+    rectanglePoints(vertices, 0.5, -1.72, 0.03, 0.1)
+    offset(vertices, -0.65, 2.08, 50, 50)
+    
+    // R
+    rectanglePoints(vertices, 0.45, -1.35, 0.04, 0.25)
+    rectanglePoints(vertices, 0.5, -1.35, -0.38, 0.03)
+    rectanglePoints(vertices, 0.56, -1.35, -0.38, 0.05)
+    rectanglePoints(vertices, 0.45, -1.73, 0.03, 0.25)
+    circlePoints(vertices, 0.7, -1.44, -0.09, -0.04, 90, 270)
+    rhombusPoints(vertices, 0.642, -1.55, -0.18, 0.06, 0.13)
+    rectanglePoints(vertices, 0.642, -1.53, -0.02, 0.07)
+    rectanglePoints(vertices, 0.78, -1.7, -0.03, 0.06)
+    offset(vertices, -0.35, 2.08, 150, 400)
+    
+
+    // WebGL stuff
     var buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
@@ -165,5 +189,15 @@ function main(){
     gl.drawArrays(gl.TRIANGLE_STRIP, 63, 4)
     gl.drawArrays(gl.TRIANGLE_STRIP, 67, 4)
     gl.drawArrays(gl.TRIANGLE_STRIP, 71, 4)
+
+    // // R
+    gl.drawArrays(gl.TRIANGLE_STRIP, 75, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 79, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 83, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 87, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 91, 38)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 129, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 133, 4)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 137, 4)
 
 }
