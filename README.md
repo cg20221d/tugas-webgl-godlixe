@@ -6,7 +6,7 @@ tugas-webgl-godlixe created by GitHub Classroom
 #### String : 47eR
 
 
-<p>
+<p align="center">
     <img src="https://github.com/cg20221d/tugas-webgl-godlixe/blob/main/Screenshot%20from%202022-09-18%2017-47-16.png?raw=true" alt>
     <p align="center">$Fig. 1 \text{ What I made}, 47\in\mathbb{R}$</p>
 </p>
