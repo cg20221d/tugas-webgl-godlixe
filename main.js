@@ -7,15 +7,18 @@ function offset(vertices, x, y, start, numPoints){
     };
 }
 
-function getPt(p1, p2, precision){
-    return p1+(p2-p1)*precision
+function circlePoints(vertices, a, b, r, thickness, startAngle, endAngle){
+    for(let i=startAngle;i<=endAngle;i+=10){
+        radian = i*Math.PI/180
+        vertices.push(r*Math.cos(radian)+a)
+        vertices.push(r*Math.sin(radian)+b)
+
+        vertices.push((r+thickness)*Math.cos(radian)+a)
+        vertices.push((r+thickness)*Math.sin(radian)+b)
+    }
 }
 
 function getBezier(vertices, p, precision, limit, offsetX, offsetY){
-    // 0 1
-    // 2 3
-    // 4 5
-    // 6 7
     let offsetP = []
 
     for(let i=0;i<8;i++){
@@ -80,10 +83,7 @@ function main(){
             0.415, -0.23,
 
             // E
-            0.6, -1.5,
-            1.5, -1.5,
-            1.5, -0.9,
-            0.6, -0.9,
+            // 0.5, -1.6
 
             // 0.6, -1.5,
             // 0.3, -1.0,
@@ -97,13 +97,14 @@ function main(){
      offset(vertices, -0.9, 1., 34, 8)
 
      bezierPoints = [
-        1.5, -1.5,
-        1.5, -0.9,
-        0.6, -0.9,
         0.6, -1.5,
+            1.5, -1.5,
+            1.5, -0.9,
+            0.6, -0.9,
      ]
     //  getBezier(vertices, bezierPoints, 0.01, 1, 0.3, -0.0)
-    offset(vertices, -0.8, 1.5, 50, 1000)
+    circlePoints(vertices, 0.5, -1.6, 0.09, 0.05, 90, 270)
+    offset(vertices, -0.5, 2.1, 50, 1000)
     console.log(vertices)
     var buffer = gl.createBuffer()
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
@@ -156,6 +157,6 @@ function main(){
     gl.drawArrays(gl.LINE_LOOP, 17, 8)
 
     // E
-    gl.drawArrays(gl.POINTS, 25, 1000)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 25, 1000)
 
 }
