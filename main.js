@@ -66,7 +66,9 @@ function getBezier(vertices, p, precision, limit, offsetX, offsetY){
 }
 
 function main(){
+
     /** @type {HTMLCanvasElement} */
+    
     var canvas = document.getElementById("kanvas")
 
     // // fullscreen
