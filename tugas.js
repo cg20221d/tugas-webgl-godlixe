@@ -37,7 +37,7 @@ function generateTriangleSideFacesIndex(indicesArr, start, end, offset){
 // Modifies the z position of a set of vertices with color
 function modifyZPosition(src_vertices, dst_vertices, start, numPoints, newZ){
     for(let i = start;i<start+6*(numPoints);i++){
-        if((i+1)%3==0) dst_vertices.push(newZ)
+        if((i+4)%6==0) dst_vertices.push(newZ)
         else dst_vertices.push(src_vertices[i])
     }
 }
@@ -60,11 +60,11 @@ function generateTriangleIndices(indicesArr, start_idx, last_idx){
 // Offset a set of vertices
 // from start to start+numpoints*2
 function offset(vertices, x, y, start, numPoints){
-    for(let i=start;i<start+(numPoints*2);i++){
-        if(i%2==0){
+    for(let i=start;i<start+(numPoints*6);i++){
+        if((i+6)%6==0){
             vertices[i]+=x
         }
-        else vertices[i]+=y
+        else if((i+5)%6==0) vertices[i]+=y
     };
 }
 
@@ -205,7 +205,6 @@ function main(){
         var vertices_e = []
         // e
         circlePoints(vertices_e, 0.5, -1, 0.5, 0.2, 90, 270, 1, 0.4, 0.2, 0.4)
-        console.log(vertices_e.length/6)
         generateTriangleIndices(indices_e, 50, 87)
         rectanglePoints(vertices_e, 0.5, -0.5, 1, 0.2, 0.5, 0.4, 0.2, 0.4)
         generateTriangleIndices(indices_e, 88, 91)
@@ -230,19 +229,53 @@ function main(){
         // offset(vertices, -0.65, 2.08, 50, 50)
         
         // R
-        // rectanglePoints(vertices, 0.45, -1.35, 0.04, 0.25)
-        // rectanglePoints(vertices, 0.5, -1.35, -0.38, 0.03)
-        // rectanglePoints(vertices, 0.56, -1.35, -0.38, 0.05)
-    // rectanglePoints(vertices, 0.45, -1.73, 0.03, 0.25)
-    // circlePoints(vertices, 0.7, -1.44, -0.09, -0.04, 90, 270)
-    // rhombusPoints(vertices, 0.642, -1.55, -0.18, 0.06, 0.13)
-    // rectanglePoints(vertices, 0.642, -1.53, -0.02, 0.07)
-    // rectanglePoints(vertices, 0.78, -1.7, -0.03, 0.06)
-    // offset(vertices, -0.35, 2.08, 150, 400)
+        var vertices_r = []
+        rectanglePoints(vertices_r, 0.45, -1.35, 1, 0.04, 0.25, 0, 0.65, 1)
+        generateTriangleIndices(indices_r, 150, 153)
+        rectanglePoints(vertices_r, 0.5, -1.35, 1, -0.38, 0.03, 0, 0, 0)
+        generateTriangleIndices(indices_r, 154, 157)
+        rectanglePoints(vertices_r, 0.56, -1.35, 1, -0.38, 0.05, 0, 0, 0)
+        generateTriangleIndices(indices_r, 158, 161)
+        rectanglePoints(vertices_r, 0.45, -1.73, 1, 0.03, 0.25, 0, 0, 0)
+        generateTriangleIndices(indices_r, 162, 165)
+        offset(vertices_r, -0.35, 1.08, 0, 16)
+
+        circlePoints(vertices_r, 0.35, -0.36, -0.09, -0.04, 90, 270, 1, 0, 0, 0) //38
+        generateTriangleIndices(indices_r, 166, 203)
+
+        rhombusPoints(vertices_r, 0.32, -0.47, 1, -0.18, 0.06, 0.13, 0, 0, 0)
+        generateTriangleIndices(indices_r, 204, 207)
+        rectanglePoints(vertices_r, 0.32, -0.45, 1, -0.02, 0.07, 0, 0, 0)
+        generateTriangleIndices(indices_r, 208, 211)
+        rectanglePoints(vertices_r, 0.45, -0.62, 1, -0.03, 0.06, 0, 0, 0)
+        generateTriangleIndices(indices_r, 212, 215)
+        
+        var d_vertices_r = []
+        modifyZPosition(vertices_r, d_vertices_r, 0, 66, 0.95)
+        vertices_r = vertices_r.concat(d_vertices_r)
+        generateTriangleIndices(indices_r, 216, 219)
+        generateTriangleIndices(indices_r, 220, 223)
+        generateTriangleIndices(indices_r, 224, 227)
+        generateTriangleIndices(indices_r, 228, 231)
+
+        generateTriangleIndices(indices_r, 232, 269)
+
+        generateTriangleIndices(indices_r, 270, 273)
+        generateTriangleIndices(indices_r, 274, 277)
+        generateTriangleIndices(indices_r, 278, 281)
+
+        generateTriangleSideFacesIndex(indices_r, 150, 154, 66)
+        generateTriangleSideFacesIndex(indices_r, 154, 158, 66)
+        generateTriangleSideFacesIndex(indices_r, 158, 162, 66)
+        generateTriangleSideFacesIndex(indices_r, 162, 166, 66)
+        generateTriangleSideFacesIndex(indices_r, 166, 204, 66)
+        generateTriangleSideFacesIndex(indices_r, 204, 208, 66)
+        generateTriangleSideFacesIndex(indices_r, 208, 212, 66)
+        generateTriangleSideFacesIndex(indices_r, 212, 216, 66)
+
     
-    
-    vertices = vertices.concat(vertices_four, vertices_svn, vertices_e)
-    indices = indices.concat(indices_four, indices_svn, indices_e)
+    vertices = vertices.concat(vertices_four, vertices_svn, vertices_e, vertices_r)
+    indices = indices.concat(indices_four, indices_svn, indices_e, indices_r)
     
     // WebGL stuff
     var buffer = gl.createBuffer()
@@ -458,6 +491,56 @@ function main(){
         gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1560);
         gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1608);
         gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1656);
+
+
+        // R
+        var model_r = glMatrix.mat4.create(); // Membuat matriks identitas
+        glMatrix.mat4.translate(
+            model_r, model_r, [horizontalDelta, verticalDelta, 1.0]
+        );
+        glMatrix.mat4.scale(
+            model_r, model_r, [3, 3, 3]
+        );
+        glMatrix.mat4.rotateX(
+            model_r, model_r, 0
+        );
+        glMatrix.mat4.rotateY(
+            model_r, model_r, 0
+        );
+        glMatrix.mat4.rotateZ(
+            model_r, model_r, 0
+        );
+        gl.uniformMatrix4fv(uModel, false, model_r);
+        gl.uniformMatrix4fv(uView, false, view);
+        gl.uniformMatrix4fv(uProjection, false, perspective);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1704);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1716);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1728);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1740);
+        gl.drawElements(gl.TRIANGLE_STRIP, 108, gl.UNSIGNED_SHORT, 1752);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1968);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1980);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1992);
+
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2004);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2016);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2028);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2040);
+        gl.drawElements(gl.TRIANGLE_STRIP, 108, gl.UNSIGNED_SHORT, 2052);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2268);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2280);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 2292);
+
+        // side face
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 2304);
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 2352);
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 2400);
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 2448);
+        gl.drawElements(gl.TRIANGLES, 228, gl.UNSIGNED_SHORT, 2496);
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 2952);
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 3000);
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 3048);
+
 
         requestAnimationFrame(render);
 
