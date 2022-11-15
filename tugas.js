@@ -1,3 +1,16 @@
+// Modifies the color of vertices from start to
+// start+numPoints
+function modifyColor(vertices, start, numPoints, r, g, b){
+    for(let i=start;i<start+(numPoints*6);i++){
+        if((i+3)%6==0){
+            vertices[i]=r
+        }
+        else if((i+2)%6==0) vertices[i]=g
+        else if((i+1)%6==0) vertices[i]=b
+    };
+}
+
+// Generates side faces for line primitive
 function generateSideFacesIndex(indicesArr, start, end, offset){
     for(let i=start;i<end;i++){
         indicesArr.push(i, i+offset)
@@ -12,10 +25,10 @@ function generateSideFacesIndex(indicesArr, start, end, offset){
     indicesArr.push(end+offset, start+offset)
 }
 
+// Generates side faces for triangle primitive
 function generateTriangleSideFacesIndex(indicesArr, start, end, offset){
     // handle even indices
     for(let i=start;i<end-2;i+=2){
-        // console.log("ini i even", i)
 
         indicesArr.push(i, i+offset, i+2)
         indicesArr.push(i+offset, i+2, i+offset+2)
@@ -42,7 +55,7 @@ function modifyZPosition(src_vertices, dst_vertices, start, numPoints, newZ){
     }
 }
 
-// Generates indices for line primitives
+// Generates indices for line primitive
 function generateLineIndices(indicesArr, start_idx, last_idx){
     indicesArr.push(start_idx)
     for(let i=start_idx+1;i<last_idx;i++){
@@ -51,6 +64,7 @@ function generateLineIndices(indicesArr, start_idx, last_idx){
     indicesArr.push(start_idx)
 }
 
+// Generates indices for tirangle primitive
 function generateTriangleIndices(indicesArr, start_idx, last_idx){
     for(let i=start_idx+1;i<last_idx;i++){
         indicesArr.push(i-1, i, i+1)
@@ -169,17 +183,19 @@ function main(){
         // 4
         //  offset(vertices, -0.5, 1., 0, 17)
         // offset(vertices, -0.5, 1., 0, 14)
+        modifyColor(vertices_four, 0, 17, 0.160, 0.650, 1.00)
         generateLineIndices(indices_four, 0, 14)
         generateLineIndices(indices_four, 14, 17)
         var d_vertices_four = []
         modifyZPosition(vertices_four, d_vertices_four, 0, 17, 0.96)
         vertices_four = vertices_four.concat(d_vertices_four)
+        offset(vertices_four, 0, .5, -0, 34)
         generateLineIndices(indices_four, 17, 31)
         generateLineIndices(indices_four, 31, 34)
         generateSideFacesIndex(indices_four, 0, 13, 17)
         generateSideFacesIndex(indices_four, 14, 16, 17)
         
-        num_prev_vertices+=vertices_four.length/6
+        // num_prev_vertices+=vertices_four.length/6
         // console.log(num_prev_vertices)
         
      var vertices_svn = [
@@ -193,6 +209,10 @@ function main(){
          0.416, -0.36, 1, 0, 0.65, 0.65,
          0.415, -0.23, 1, 0, 0.65, 0.65 //41
         ]
+        modifyColor(vertices_svn, 0, 8, 1.00, 0.160, 0.930)
+
+
+        offset(vertices_svn, -0.1, 0.5, -0, 8)
         //  7
         generateLineIndices(indices_svn, 34, 42)
         var d_vertices_svn = []
@@ -205,14 +225,16 @@ function main(){
         var vertices_e = []
         // e
         circlePoints(vertices_e, 0.5, -1, 0.5, 0.2, 90, 270, 1, 0.4, 0.2, 0.4)
-        generateTriangleIndices(indices_e, 50, 87)
         rectanglePoints(vertices_e, 0.5, -0.5, 1, 0.2, 0.5, 0.4, 0.2, 0.4)
-        generateTriangleIndices(indices_e, 88, 91)
         rectanglePoints(vertices_e, 0, -1.1, 1, 0.2, 1, 0.4, 0.2, 0.4)
-        generateTriangleIndices(indices_e, 92, 95)
         rectanglePoints(vertices_e, 0.5, -1.7, 1, 0.2, 0.5, 0.4, 0.2, 0.4)
+        modifyColor(vertices_e, 0, 50, 0.594, 0.990, 0.759)
+        offset(vertices_e, -2, -1.5, -0, 50)
+        generateTriangleIndices(indices_e, 50, 87)
+        generateTriangleIndices(indices_e, 88, 91)
+        generateTriangleIndices(indices_e, 92, 95)
         generateTriangleIndices(indices_e, 96, 99)
-
+        
         var d_vertices_e = []
         modifyZPosition(vertices_e, d_vertices_e, 0, 50, 0.9)
         // console.log(d_vertices_e)
@@ -231,23 +253,26 @@ function main(){
         // R
         var vertices_r = []
         rectanglePoints(vertices_r, 0.45, -1.35, 1, 0.04, 0.25, 0, 0.65, 1)
-        generateTriangleIndices(indices_r, 150, 153)
         rectanglePoints(vertices_r, 0.5, -1.35, 1, -0.38, 0.03, 0, 0, 0)
-        generateTriangleIndices(indices_r, 154, 157)
         rectanglePoints(vertices_r, 0.56, -1.35, 1, -0.38, 0.05, 0, 0, 0)
-        generateTriangleIndices(indices_r, 158, 161)
         rectanglePoints(vertices_r, 0.45, -1.73, 1, 0.03, 0.25, 0, 0, 0)
-        generateTriangleIndices(indices_r, 162, 165)
         offset(vertices_r, -0.35, 1.08, 0, 16)
-
+        
         circlePoints(vertices_r, 0.35, -0.36, -0.09, -0.04, 90, 270, 1, 0, 0, 0) //38
-        generateTriangleIndices(indices_r, 166, 203)
-
+        
         rhombusPoints(vertices_r, 0.32, -0.47, 1, -0.18, 0.06, 0.13, 0, 0, 0)
-        generateTriangleIndices(indices_r, 204, 207)
         rectanglePoints(vertices_r, 0.32, -0.45, 1, -0.02, 0.07, 0, 0, 0)
-        generateTriangleIndices(indices_r, 208, 211)
         rectanglePoints(vertices_r, 0.45, -0.62, 1, -0.03, 0.06, 0, 0, 0)
+        
+        modifyColor(vertices_r, 0, 66, 0.930, 0.648, 0.279)
+
+        generateTriangleIndices(indices_r, 150, 153)
+        generateTriangleIndices(indices_r, 154, 157)
+        generateTriangleIndices(indices_r, 158, 161)
+        generateTriangleIndices(indices_r, 162, 165)
+        generateTriangleIndices(indices_r, 166, 203)
+        generateTriangleIndices(indices_r, 204, 207)
+        generateTriangleIndices(indices_r, 208, 211)
         generateTriangleIndices(indices_r, 212, 215)
         
         var d_vertices_r = []
@@ -326,7 +351,7 @@ function main(){
     // camera
 
     // Variabel lokal
-    var theta = 0.0;
+    var thetaX = 0.0, thetaY = 0.0;
     var freeze = false;
     var horizontalSpeed = 0.0;
     var verticalSpeed = 0.0;
@@ -363,9 +388,11 @@ function main(){
         3 * Float32Array.BYTES_PER_ELEMENT);
     gl.enableVertexAttribArray(aColor);
 
-    gl.clearColor(1.0, 1.0, 1.0, 1.0)
+    // gl.clearColor(0.1,      0.2,    0.1,    1.0);  // Oranye
+    // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // gl.clearColor(1.0, 1.0, 1.0, 1.0)
 
-    gl.clear(gl.COLOR_BUFFER_BIT)
+    // gl.clear(gl.COLOR_BUFFER_BIT)
 
 
         // Grafika interaktif
@@ -377,33 +404,32 @@ function main(){
     // Papan ketuk
     function onKeydown(event) {
         if (event.keyCode == 32) freeze = !freeze;  // spasi
-        // Gerakan horizontal: a ke kiri, d ke kanan
-        if (event.keyCode == 65) {  // a
-            horizontalSpeed = -0.01;
-        } else if (event.keyCode == 68) {   // d
-            horizontalSpeed = 0.01;
+        // Gerakan horizontal: a/left ke kiri, d/right ke kanan
+        if (event.keyCode == 65 || event.keyCode == 37) {  // a
+            thetaY += 0.05;
+        } else if (event.keyCode == 68 || event.keyCode == 39) {   // d
+            thetaY -= 0.05;
         }
-        // Gerakan vertikal: w ke atas, s ke bawah
-        if (event.keyCode == 87) {  // w
-            verticalSpeed = -0.01;
-        } else if (event.keyCode == 83) {   // s
-            verticalSpeed = 0.01;
+        // Gerakan vertikal: w/up ke atas, s/down ke bawah
+        if (event.keyCode == 87 || event.keyCode == 38) {  // w
+            thetaX -= 0.05;
+        } else if (event.keyCode == 83 || event.keyCode == 40) {   // s
+            thetaX += 0.05;
         }
     }
     function onKeyup(event) {
         if (event.keyCode == 32) freeze = !freeze;
-        if (event.keyCode == 65 || event.keyCode == 68) horizontalSpeed = 0.0;
-        if (event.keyCode == 87 || event.keyCode == 83) verticalSpeed = 0.0;
     }
+
     document.addEventListener("keydown", onKeydown);
     document.addEventListener("keyup", onKeyup);
     
     var isGoingRight = true, isScaling = true
-    var scaleX = 3, scaleY = 3, scaleZ = 3
+    var scaleX = 4, scaleY = 4, scaleZ = 4
     function render() {
         gl.enable(gl.DEPTH_TEST);
-        gl.clearColor(0.0,      0.0,    0.0,    0.0);  // Oranye
         //            Merah     Hijau   Biru    Transparansi
+        gl.clearColor(0,      0,    0.1,    1.0);  // Oranye
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         horizontalDelta += horizontalSpeed;
         verticalDelta -= verticalSpeed;
@@ -427,10 +453,6 @@ function main(){
         gl.uniformMatrix4fv(uModel, false, model);
         gl.uniformMatrix4fv(uView, false, view);
         gl.uniformMatrix4fv(uProjection, false, perspective);
-        // gl.drawElements(gl.LINE_LOOP, 28, gl.UNSIGNED_SHORT, 0);
-        // gl.drawElements(gl.LINE_LOOP, 6, gl.UNSIGNED_SHORT, 56);
-        // gl.drawElements(gl.LINE_LOOP, 28, gl.UNSIGNED_SHORT, 68);
-        // gl.drawElements(gl.LINE_LOOP, 6, gl.UNSIGNED_SHORT, 124);
         gl.drawElements(gl.LINES, 112, gl.UNSIGNED_SHORT, 136);
         gl.drawElements(gl.LINES, 24, gl.UNSIGNED_SHORT, 360);
 
@@ -440,7 +462,7 @@ function main(){
             model_svn, model_svn, [-0.5, 0.0, 0.0]
         );
         glMatrix.mat4.scale(
-            model_svn, model_svn, [4, 4, 4]
+            model_svn, model_svn, [scaleX, scaleY, scaleZ]
         );
         glMatrix.mat4.rotateX(
             model_svn, model_svn, 0
@@ -454,21 +476,21 @@ function main(){
         gl.uniformMatrix4fv(uModel, false, model_svn);
         gl.uniformMatrix4fv(uView, false, view);
         gl.uniformMatrix4fv(uProjection, false, perspective);
-        // gl.drawElements(gl.LINE_LOOP, 16, gl.UNSIGNED_SHORT, 408);
         gl.drawElements(gl.LINES, 64, gl.UNSIGNED_SHORT, 472);
+
         // e
         var model_e = glMatrix.mat4.create(); // Membuat matriks identitas
         glMatrix.mat4.translate(
-            model_e, model_e, [horizontalDelta, verticalDelta, 1.0]
+            model_e, model_e, [0, 0, 0]
         );
         glMatrix.mat4.scale(
-            model_e, model_e, [1, 1, 1]
+            model_e, model_e, [1.2, 1.2, 1.2]
         );
         glMatrix.mat4.rotateX(
             model_e, model_e, 0
         );
         glMatrix.mat4.rotateY(
-            model_e, model_e, 0
+            model_e, model_e, thetaY
         );
         glMatrix.mat4.rotateZ(
             model_e, model_e, 0
@@ -496,13 +518,13 @@ function main(){
         // R
         var model_r = glMatrix.mat4.create(); // Membuat matriks identitas
         glMatrix.mat4.translate(
-            model_r, model_r, [horizontalDelta, verticalDelta, 1.0]
+            model_r, model_r, [0, 0, 0]
         );
         glMatrix.mat4.scale(
-            model_r, model_r, [3, 3, 3]
+            model_r, model_r, [4, 4, 4]
         );
         glMatrix.mat4.rotateX(
-            model_r, model_r, 0
+            model_r, model_r, thetaX
         );
         glMatrix.mat4.rotateY(
             model_r, model_r, 0
@@ -545,11 +567,8 @@ function main(){
         requestAnimationFrame(render);
 
         if (!freeze) {
-            // theta -= 0.001;
-            if(model[12]>=4.75 && isGoingRight) isGoingRight = false
-            else if(model[12] <= -4.75) isGoingRight = true
-            // console.log(model[12]*100, window.innerWidth, isGoingRight)
-            // console.log(view)
+            if(model[12]>=3.5 && isGoingRight) isGoingRight = false
+            else if(model[12] <= -1.5) isGoingRight = true
             if(isGoingRight){
                 horizontalDelta+=0.0247
             }
@@ -557,63 +576,20 @@ function main(){
                 horizontalDelta-=0.0247
             }
 
-
-            if(scaleX<4 && !isScaling) isScaling = true
-            else if (scaleX>=3 && isScaling) isScaling = false
-
+            if(scaleX>=4) isScaling = false
+            else if(scaleX<=3) isScaling = true
             if(isScaling){
                 scaleX+=0.01
                 scaleY+=0.01
                 scaleZ+=0.01
             }
-            else{
+            else if(!isScaling) {
                 scaleX-=0.01
                 scaleY-=0.01
                 scaleZ-=0.01
             }
-            // console.log(model)
         }
-        inv_view = glMatrix.mat4.invert([], view);
-        inv_proj = glMatrix.mat4.invert([], perspective);
-        ndc_corner = glMatrix.vec4.set([], -1, -1, -1, -1); // (-1, -1, -1) left, bottom, near
-        view_corner_h = glMatrix.vec4.transformMat4([], ndc_corner, inv_proj);
-        view_corner = glMatrix.vec4.scale([], view_corner_h, 1/view_corner_h[3]);
-        // console.log(view_corner_h)
-        // console.log(view_corner)
-        world_corner = glMatrix.vec4.transformMat4([], view_corner, inv_view);
-        // console.log(world_corner)
-        // console.log(model[12], model[13], model[14])
-
-        // console.log(model)
     }
     requestAnimationFrame(render);
-    console.log(vertices)
-    console.log(indices);
     console.log(gl.getError())
-
-
-
-    // 4
-    // gl.drawArrays(gl.LINE_LOOP, 0, 14)
-    // gl.drawArrays(gl.LINE_LOOP, 14, 3)
-
-    // 7
-    // gl.drawArrays(gl.LINE_LOOP, 17, 8)
-
-    // // E
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 25, 38)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 63, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 67, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 71, 4)
-
-    // // // R
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 75, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 79, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 83, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 87, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 91, 38)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 129, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 133, 4)
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 137, 4)
-
 }
