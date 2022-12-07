@@ -401,6 +401,7 @@ function main(){
     var verticalSpeed = 0.0;
     var horizontalDelta = 0.0;
     var verticalDelta = 0.0;
+    var cubeTranslation = [0, 0, 0]
 
     // Variabel pointer ke GLSL
     var uModel = gl.getUniformLocation(shaderProgram, "uModel");
@@ -442,7 +443,7 @@ function main(){
     gl.uniform3fv(uLightConstant, [1.0, 1.0, 1.0]);   // warna sumber cahaya: oranye
     gl.uniform1f(uAmbientIntensity, 0.547);               // intensitas cahaya: 40%
     var uLightPosition = gl.getUniformLocation(shaderProgram, "uLightPosition");
-    gl.uniform3fv(uLightPosition, [1.0, 0.0, 0.0]);
+    gl.uniform3fv(uLightPosition, cubeTranslation);
     var uNormalModel = gl.getUniformLocation(shaderProgram, "uNormalModel");
     var uViewerPosition = gl.getUniformLocation(shaderProgram, "uViewerPosition");
     gl.uniform3fv(uViewerPosition, camera);
@@ -473,6 +474,17 @@ function main(){
             thetaX -= 0.05;
         } else if (event.keyCode == 83 || event.keyCode == 40) {   // s
             thetaX += 0.05;
+        }
+
+        // tombol I, K untuk submbu z dan J, L untuk sumbu X
+        if (event.keyCode == 73) {  // I
+            cubeTranslation[2]+=1
+        } else if (event.keyCode == 75) {   // K
+            cubeTranslation[2]-=1
+        } else if (event.keyCode == 74) {   // J
+            cubeTranslation[0]-=1
+        } else if (event.keyCode == 76) {   // L
+            cubeTranslation[0]+=1
         }
     }
     function onKeyup(event) {
@@ -623,13 +635,13 @@ function main(){
 
         var model_cube = glMatrix.mat4.create(); // Membuat matriks identitas
         glMatrix.mat4.translate(
-            model_cube, model_cube, [0, 0, 0]
+            model_cube, model_cube, cubeTranslation
         );
         glMatrix.mat4.scale(
             model_cube, model_cube, [2, 2, 2]
         );
         glMatrix.mat4.rotateX(
-            model_cube, model_cube, thetaX
+            model_cube, model_cube, 0
         );
         glMatrix.mat4.rotateY(
             model_cube, model_cube, 0
