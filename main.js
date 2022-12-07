@@ -1,144 +1,145 @@
 // Modifies the color of vertices from start to
 // start+numPoints
-function modifyColor(vertices, start, numPoints, r, g, b){
-    for(let i=start;i<start+(numPoints*6);i++){
-        if((i+3)%6==0){
-            vertices[i]=r
+function modifyColor(vertices, start, numPoints, r, g, b) {
+    for (let i = start; i < start + (numPoints * 9); i++) {
+        if ((i + 6) % 9 == 0) {
+            vertices[i] = r
         }
-        else if((i+2)%6==0) vertices[i]=g
-        else if((i+1)%6==0) vertices[i]=b
+        else if ((i + 5) % 9 == 0) vertices[i] = g
+        else if ((i + 4) % 9 == 0) vertices[i] = b
     };
 }
 
 // Generates side faces for line primitive
-function generateSideFacesIndex(indicesArr, start, end, offset){
-    for(let i=start;i<end;i++){
-        indicesArr.push(i, i+offset)
-        indicesArr.push(i, i+1)
-        indicesArr.push(i+1, i+offset+1)
-        indicesArr.push(i+offset+1, i+offset)
+function generateSideFacesIndex(indicesArr, start, end, offset) {
+    for (let i = start; i < end; i++) {
+        indicesArr.push(i, i + offset)
+        indicesArr.push(i, i + 1)
+        indicesArr.push(i + 1, i + offset + 1)
+        indicesArr.push(i + offset + 1, i + offset)
     }
     // handle last indices
-    indicesArr.push(end, end+offset)
+    indicesArr.push(end, end + offset)
     indicesArr.push(end, start)
-    indicesArr.push(start, start+offset)
-    indicesArr.push(end+offset, start+offset)
+    indicesArr.push(start, start + offset)
+    indicesArr.push(end + offset, start + offset)
 }
 
 // Generates side faces for triangle primitive
-function generateTriangleSideFacesIndex(indicesArr, start, end, offset){
+function generateTriangleSideFacesIndex(indicesArr, start, end, offset) {
     // handle even indices
-    for(let i=start;i<end-2;i+=2){
+    for (let i = start; i < end - 2; i += 2) {
 
-        indicesArr.push(i, i+offset, i+2)
-        indicesArr.push(i+offset, i+2, i+offset+2)
+        indicesArr.push(i, i + offset, i + 2)
+        indicesArr.push(i + offset, i + 2, i + offset + 2)
     }
     // handle odd indices
-    for(let i=start+1;i<end-2;i+=2){
-        indicesArr.push(i, i+offset, i+2)
-        indicesArr.push(i+offset, i+2, i+offset+2)
+    for (let i = start + 1; i < end - 2; i += 2) {
+        indicesArr.push(i, i + offset, i + 2)
+        indicesArr.push(i + offset, i + 2, i + offset + 2)
     }
     // handle top indices
-    indicesArr.push(start, start+offset, start+1)
-    indicesArr.push(start+offset, start+1, start+1+offset)
+    indicesArr.push(start, start + offset, start + 1)
+    indicesArr.push(start + offset, start + 1, start + 1 + offset)
 
     // // handle bottom indices
-    indicesArr.push(end-2, end+offset-2, end-1)
-    indicesArr.push(end+offset-2, end-1, end+offset-1)
+    indicesArr.push(end - 2, end + offset - 2, end - 1)
+    indicesArr.push(end + offset - 2, end - 1, end + offset - 1)
 }
 
 // Modifies the z position of a set of vertices with color
-function modifyZPosition(src_vertices, dst_vertices, start, numPoints, newZ){
-    for(let i = start;i<start+6*(numPoints);i++){
-        if((i+4)%6==0) dst_vertices.push(newZ)
+function modifyZPosition(src_vertices, dst_vertices, start, numPoints, newZ) {
+    for (let i = start; i < start + 9 * (numPoints); i++) {
+        if ((i + 7) % 9 == 0) dst_vertices.push(newZ)
         else dst_vertices.push(src_vertices[i])
     }
 }
 
 // Generates indices for line primitive
-function generateLineIndices(indicesArr, start_idx, last_idx){
+function generateLineIndices(indicesArr, start_idx, last_idx) {
     indicesArr.push(start_idx)
-    for(let i=start_idx+1;i<last_idx;i++){
+    for (let i = start_idx + 1; i < last_idx; i++) {
         indicesArr.push(i, i)
     }
     indicesArr.push(start_idx)
 }
 
 // Generates indices for tirangle primitive
-function generateTriangleIndices(indicesArr, start_idx, last_idx){
-    for(let i=start_idx+1;i<last_idx;i++){
-        indicesArr.push(i-1, i, i+1)
+function generateTriangleIndices(indicesArr, start_idx, last_idx) {
+    for (let i = start_idx + 1; i < last_idx; i++) {
+        indicesArr.push(i - 1, i, i + 1)
     }
 }
 
 // Offset a set of vertices
 // from start to start+numpoints*2
-function offset(vertices, x, y, start, numPoints){
-    for(let i=start;i<start+(numPoints*6);i++){
-        if((i+6)%6==0){
-            vertices[i]+=x
+function offset(vertices, x, y, start, numPoints) {
+    for (let i = start; i < start + (numPoints * 9); i++) {
+        if ((i + 9) % 9 == 0) {
+            vertices[i] += x
         }
-        else if((i+5)%6==0) vertices[i]+=y
+        else if ((i + 8) % 9 == 0) vertices[i] += y
     };
 }
 
 // Generates points for a rhombus from a given point
 // with height, width, and offset
-function rhombusPoints(vertices, x1, y1, z, height, width, offset, r, g, b){
-    vertices.push(x1, y1, z, r, g, b)
-    vertices.push(x1+width, y1, z, r, g, b)
-    vertices.push(x1+offset, y1+height, z, r, g, b)
-    vertices.push(x1+width+offset, y1+height, z, r, g, b)
+function rhombusPoints(vertices, x1, y1, z, height, width, offset, red, green, blue, sn_x, sn_y, sn_z) {
+    vertices.push(x1, y1, z, red, green, blue, sn_x, sn_y, sn_z)
+    vertices.push(x1 + width, y1, z, red, green, blue, sn_x, sn_y, sn_z)
+    vertices.push(x1 + offset, y1 + height, z, red, green, blue, sn_x, sn_y, sn_z)
+    vertices.push(x1 + width + offset, y1 + height, z, red, green, blue, sn_x, sn_y, sn_z)
 }
 
 // Generates rectangle points from a given point
 // with height and width
-function rectanglePoints(vertices, x1, y1, z, height, width, r, g, b){
-    vertices.push(x1, y1, z, r, g, b)
-    vertices.push(x1, y1+height, z, r, g, b)
-    vertices.push(x1+width, y1, z, r, g, b)
-    vertices.push(x1+width, y1+height, z, r, g, b)
+function rectanglePoints(vertices, x1, y1, z, height, width, red, green, blue, sn_x, sn_y, sn_z) {
+    vertices.push(x1, y1, z, red, green, blue, sn_x, sn_y, sn_z)
+    vertices.push(x1, y1 + height, z, red, green, blue, sn_x, sn_y, sn_z)
+    vertices.push(x1 + width, y1, z, red, green, blue, sn_x, sn_y, sn_z)
+    vertices.push(x1 + width, y1 + height, z, red, green, blue, sn_x, sn_y, sn_z)
 }
 
 // Generates circle points given it's center,
-// radius, thickness, and start angle
-function circlePoints(vertices, a, b, r, thickness, startAngle, endAngle, z, red, green, blue){
-    for(let i=startAngle;i<=endAngle;i+=10){
-        radian = i*Math.PI/180
-        vertices.push(r*Math.cos(radian)+a)
-        vertices.push(r*Math.sin(radian)+b)
-        vertices.push(z, red, green, blue)
+// radius, thickness, and start angle with sn as surface normal
+function circlePoints(vertices, a, b, r, thickness, startAngle, endAngle, z, red, green, blue, sn_x, sn_y, sn_z) {
+    for (let i = startAngle; i <= endAngle; i += 10) {
+        radian = i * Math.PI / 180
+        vertices.push(r * Math.cos(radian) + a)
+        vertices.push(r * Math.sin(radian) + b)
+        vertices.push(z, red, green, blue, sn_x, sn_y, sn_z)
 
-        vertices.push((r+thickness)*Math.cos(radian)+a)
-        vertices.push((r+thickness)*Math.sin(radian)+b)
-        vertices.push(z, red, green, blue)
+        vertices.push((r + thickness) * Math.cos(radian) + a)
+        vertices.push((r + thickness) * Math.sin(radian) + b)
+        vertices.push(z, red, green, blue, sn_x, sn_y, sn_z)
     }
 }
 
 // Generates a cubic bezier curve given 
 // set of control points and offsets
-function getBezier(vertices, p, precision, limit, offsetX, offsetY){
+function getBezier(vertices, p, precision, limit, offsetX, offsetY) {
     let offsetP = []
 
-    for(let i=0;i<8;i++){
-        if(i%2==0) offsetP.push(p[i]+offsetX)
-        else offsetP.push(p[i]+offsetY)
+    for (let i = 0; i < 8; i++) {
+        if (i % 2 == 0) offsetP.push(p[i] + offsetX)
+        else offsetP.push(p[i] + offsetY)
     }
 
-    for (let t=0;t<limit;t+=precision){
-        temp = 1-t
-        x = (Math.pow(temp, 3)*p[0])+(3*Math.pow(temp,2)*t*p[2])+(3*temp*Math.pow(t, 2)*p[4])+(Math.pow(t, 3)*p[6])
-        y = (Math.pow(temp, 3)*p[1])+(3*Math.pow(temp,3)*t*p[3])+(3*temp*Math.pow(t, 2)*p[5])+(Math.pow(t, 3)*p[7])
+    for (let t = 0; t < limit; t += precision) {
+        temp = 1 - t
+        x = (Math.pow(temp, 3) * p[0]) + (3 * Math.pow(temp, 2) * t * p[2]) + (3 * temp * Math.pow(t, 2) * p[4]) + (Math.pow(t, 3) * p[6])
+        y = (Math.pow(temp, 3) * p[1]) + (3 * Math.pow(temp, 3) * t * p[3]) + (3 * temp * Math.pow(t, 2) * p[5]) + (Math.pow(t, 3) * p[7])
         vertices.push(x)
         vertices.push(y)
 
-        y = (Math.pow(temp, 3)*offsetP[1])+(3*Math.pow(temp,3)*t*offsetP[3])+(3*temp*Math.pow(t, 2)*offsetP[5])+(Math.pow(t, 3)*offsetP[7])
-        x = (Math.pow(temp, 3)*offsetP[0])+(3*Math.pow(temp,2)*t*offsetP[2])+(3*temp*Math.pow(t, 2)*offsetP[4])+(Math.pow(t, 3)*offsetP[6])
+        y = (Math.pow(temp, 3) * offsetP[1]) + (3 * Math.pow(temp, 3) * t * offsetP[3]) + (3 * temp * Math.pow(t, 2) * offsetP[5]) + (Math.pow(t, 3) * offsetP[7])
+        x = (Math.pow(temp, 3) * offsetP[0]) + (3 * Math.pow(temp, 2) * t * offsetP[2]) + (3 * temp * Math.pow(t, 2) * offsetP[4]) + (Math.pow(t, 3) * offsetP[6])
 
         vertices.push(x)
         vertices.push(y)
     }
 }
+
 
 function main(){
 
@@ -152,27 +153,27 @@ function main(){
 
     var gl = canvas.getContext('webgl')
     var vertices = []
-    var vertices_four = 
+    var vertices_four =
         [
             // 4's outline      clr
-            -0.187, -0.22, 1, 1, 0, 0,   //0  
-            -0.186, -0.49, 1, 1, 0, 0,
-            -0.121, -0.49, 1, 1, 0, 0, 
-            -0.122, -0.54, 1, 1, 0, 0, 
-            -0.186, -0.54, 1, 1, 0, 0, 
-            -0.185, -0.6, 1, 1, 0, 0, 
-            -0.123, -0.62, 1, 1, 0, 0, 
-            -0.121, -0.65, 1, 1, 0, 0, 
-            -0.315, -0.65, 1, 1, 0, 0, 
-            -0.315, -0.63, 1, 1, 0, 0, 
-            -0.247, -0.61, 1, 1, 0, 0, 
-            -0.242, -0.54, 1, 1, 0, 0, 
-            -0.408, -0.54, 1, 1, 0, 0, 
-            -0.24, -0.24, 1, 1, 0, 0, //13
+            -0.187, -0.22, 1, 1, 0, 0, 0, 0, 1,            //0  
+            -0.186, -0.49, 1, 1, 0, 0, 0, 0, 1,
+            -0.121, -0.49, 1, 1, 0, 0, 0, 0, 1,
+            -0.122, -0.54, 1, 1, 0, 0, 0, 0, 1,
+            -0.186, -0.54, 1, 1, 0, 0, 0, 0, 1,
+            -0.185, -0.6, 1, 1, 0, 0, 0, 0, 1,
+            -0.123, -0.62, 1, 1, 0, 0, 0, 0, 1,
+            -0.121, -0.65, 1, 1, 0, 0, 0, 0, 1,
+            -0.315, -0.65, 1, 1, 0, 0, 0, 0, 1,
+            -0.315, -0.63, 1, 1, 0, 0, 0, 0, 1,
+            -0.247, -0.61, 1, 1, 0, 0, 0, 0, 1,
+            -0.242, -0.54, 1, 1, 0, 0, 0, 0, 1,
+            -0.408, -0.54, 1, 1, 0, 0, 0, 0, 1,
+            -0.24, -0.24, 1, 1, 0, 0, 0, 0, 1,        //13
             // 4's  innner triangle
-            -0.242, -0.3, 1, 1, 0, 0, //14
-            -0.35, -0.49, 1, 1, 0, 0, 
-            -0.242, -0.49, 1, 1, 0, 0 //16
+            -0.242, -0.3, 1, 1, 0, 0, 0, 0, 1,        //14
+            -0.35, -0.49, 1, 1, 0, 0, 0, 0, 1,
+            -0.242, -0.49, 1, 1, 0, 0, 0, 0, 1         //16
         ];
 
         var indices = [], indices_four = [], indices_svn = [], indices_e = [], indices_r = [];
@@ -198,16 +199,16 @@ function main(){
         // num_prev_vertices+=vertices_four.length/6
         // console.log(num_prev_vertices)
         
-     var vertices_svn = [
-         // 7
-         0.692, -0.23, 1, 0, 0.65, 0.65, //34
-         0.489, -0.65, 1, 0, 0.65, 0.65,
-         0.417, -0.65, 1, 0, 0.65, 0.65,
-         0.610, -0.29, 1, 0, 0.65, 0.65,
-         0.459, -0.29, 1, 0, 0.65, 0.65,
-         0.439, -0.36, 1, 0, 0.65, 0.65,
-         0.416, -0.36, 1, 0, 0.65, 0.65,
-         0.415, -0.23, 1, 0, 0.65, 0.65 //41
+        var vertices_svn = [
+            // 7
+            0.692, -0.23, 1, 0, 0.65, 0.65, 0, 0, 1,  //34
+            0.489, -0.65, 1, 0, 0.65, 0.65, 0, 0, 1,
+            0.417, -0.65, 1, 0, 0.65, 0.65, 0, 0, 1,
+            0.610, -0.29, 1, 0, 0.65, 0.65, 0, 0, 1,
+            0.459, -0.29, 1, 0, 0.65, 0.65, 0, 0, 1,
+            0.439, -0.36, 1, 0, 0.65, 0.65, 0, 0, 1,
+            0.416, -0.36, 1, 0, 0.65, 0.65, 0, 0, 1,
+            0.415, -0.23, 1, 0, 0.65, 0.65, 0, 0, 1,   //41
         ]
         modifyColor(vertices_svn, 0, 8, 1.00, 0.160, 0.930)
 
@@ -298,9 +299,16 @@ function main(){
         generateTriangleSideFacesIndex(indices_r, 208, 212, 66)
         generateTriangleSideFacesIndex(indices_r, 212, 216, 66)
 
+        var vertices_cubelight = [], d_vertices_cubelight = [], indices_cubelight = []
+        rectanglePoints(vertices_cubelight, 0.3, -3, 1, 0.4, 0.4, 0, 1, 0, 0, 0, 1)
+        modifyZPosition(vertices_cubelight, d_vertices_cubelight, 0, 4, 0.95)
+        modifyColor(vertices_cubelight, 0, 4, 0.930, 0.648, 0.279)
+        generateTriangleIndices(indices_cubelight, 282, 286)
+        console.log(vertices_cubelight, indices_cubelight)
+
     
-    vertices = vertices.concat(vertices_four, vertices_svn, vertices_e, vertices_r)
-    indices = indices.concat(indices_four, indices_svn, indices_e, indices_r)
+    vertices = vertices.concat(vertices_four, vertices_svn, vertices_e, vertices_r, vertices_cubelight)
+    indices = indices.concat(indices_four, indices_svn, indices_e, indices_r, indices_cubelight)
     
     // WebGL stuff
     var buffer = gl.createBuffer()
@@ -314,15 +322,20 @@ function main(){
     //  Vertex shader
     var vertexShaderCode 
     = `
-    attribute vec3 aPosition;  
+    attribute vec3 aPosition;
     attribute vec3 aColor;
+    attribute vec3 aNormal;
     uniform mat4 uModel;
     uniform mat4 uView;
     uniform mat4 uProjection;
+    varying vec3 vPosition;
     varying vec3 vColor;
+    varying vec3 vNormal;
     void main() {
         gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
         vColor = aColor;
+        vNormal = aNormal;
+        vPosition = (uModel * vec4(aPosition, 1.0)).xyz;
     }`
 
     var vertexShaderObject = gl.createShader(gl.VERTEX_SHADER)
@@ -333,8 +346,35 @@ function main(){
     var fragmentShaderCode = `
     precision mediump float;
     varying vec3 vColor;
+    varying vec3 vNormal;
+    varying vec3 vPosition;             // titik fragmen
+    uniform float uAmbientIntensity;    // merepresentasikan intensitas cahaya sekitar
+    uniform vec3 uLightConstant;        // merepresentasikan warna sumber cahaya
+    uniform vec3 uLightPosition;        // titik lokasi sumber cahaya
+    uniform vec3 uViewerPosition;       // titik lokasi mata atau kamera pengamat
+    uniform mat3 uNormalModel;
     void main() {
-        gl_FragColor = vec4(vColor, 1.0);
+        vec3 ambient = uLightConstant * uAmbientIntensity;
+        vec3 lightRay = vPosition - uLightPosition;
+        vec3 normalizedLight = normalize(-lightRay);
+        vec3 normalizedNormal = normalize(uNormalModel * vNormal);
+        float cosTheta = dot(normalizedNormal, normalizedLight);
+        vec3 diffuse = vec3(0.0, 0.0, 0.0);
+        if (cosTheta > 0.0) {
+            float diffuseIntensity = cosTheta;
+            diffuse = uLightConstant * diffuseIntensity;
+        }
+        vec3 normalizedReflector = normalize(reflect(lightRay, normalizedNormal));
+        vec3 normalizedViewer = normalize(uViewerPosition - vPosition);
+        float cosPhi = dot(normalizedReflector, normalizedViewer);
+        vec3 specular = vec3(0.0, 0.0, 0.0);
+        if (cosPhi > 0.0) {
+            float shininessConstant = 100.0;    // batas minimum spesifikasi spekular untuk materi logam
+            float specularIntensity = pow(cosPhi, shininessConstant);
+            specular = uLightConstant * specularIntensity;
+        }
+        vec3 phong = ambient + diffuse + specular;
+        gl_FragColor = vec4(phong * vColor, 1.0);
     }
     `
 
@@ -361,14 +401,13 @@ function main(){
     // Variabel pointer ke GLSL
     var uModel = gl.getUniformLocation(shaderProgram, "uModel");
     // View
-    var cameraX = 0.0;
-    var cameraZ = 7.5;
+    var camera = [0.0, 0.0, 7.5];
     var uView = gl.getUniformLocation(shaderProgram, "uView");
     var view = glMatrix.mat4.create();
     glMatrix.mat4.lookAt(
         view,
-        [cameraX, -1.0, cameraZ],    // the location of the eye or the camera
-        [cameraX, -1.0, 0],        // the point where the camera look at
+        camera,    // the location of the eye or the camera
+        [camera[0], -1.0, 0],        // the point where the camera look at
         [0.0, 1.0, 0.0]
     );
     // Projection
@@ -379,15 +418,30 @@ function main(){
 
     var aPosition = gl.getAttribLocation(shaderProgram, "aPosition");
     gl.vertexAttribPointer(aPosition, 3, gl.FLOAT, false, 
-        6 * Float32Array.BYTES_PER_ELEMENT, 
+        9 * Float32Array.BYTES_PER_ELEMENT, 
         0);
     gl.enableVertexAttribArray(aPosition);
     var aColor = gl.getAttribLocation(shaderProgram, "aColor");
     gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, 
-        6 * Float32Array.BYTES_PER_ELEMENT, 
+        9 * Float32Array.BYTES_PER_ELEMENT, 
         3 * Float32Array.BYTES_PER_ELEMENT);
     gl.enableVertexAttribArray(aColor);
+    var aNormal = gl.getAttribLocation(shaderProgram, "aNormal");
+    gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false,
+        9 * Float32Array.BYTES_PER_ELEMENT,
+        6 * Float32Array.BYTES_PER_ELEMENT);
+    gl.enableVertexAttribArray(aNormal);
 
+
+    var uLightConstant = gl.getUniformLocation(shaderProgram, "uLightConstant");
+    var uAmbientIntensity = gl.getUniformLocation(shaderProgram, "uAmbientIntensity");
+    gl.uniform3fv(uLightConstant, [1.0, 1.0, 1.0]);   // warna sumber cahaya: oranye
+    gl.uniform1f(uAmbientIntensity, 1);               // intensitas cahaya: 40%
+    var uLightPosition = gl.getUniformLocation(shaderProgram, "uLightPosition");
+    gl.uniform3fv(uLightPosition, [1.0, 0.0, 0.0]);
+    var uNormalModel = gl.getUniformLocation(shaderProgram, "uNormalModel");
+    var uViewerPosition = gl.getUniformLocation(shaderProgram, "uViewerPosition");
+    gl.uniform3fv(uViewerPosition, camera);
     // gl.clearColor(0.1,      0.2,    0.1,    1.0);  // Oranye
     // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     // gl.clearColor(1.0, 1.0, 1.0, 1.0)
@@ -457,62 +511,62 @@ function main(){
         gl.drawElements(gl.LINES, 24, gl.UNSIGNED_SHORT, 360);
 
         // 7
-        var model_svn = glMatrix.mat4.create(); // Membuat matriks identitas
-        glMatrix.mat4.translate(
-            model_svn, model_svn, [-0.5, 0.0, 0.0]
-        );
-        glMatrix.mat4.scale(
-            model_svn, model_svn, [scaleX, scaleY, scaleZ]
-        );
-        glMatrix.mat4.rotateX(
-            model_svn, model_svn, 0
-        );
-        glMatrix.mat4.rotateY(
-            model_svn, model_svn, 0
-        );
-        glMatrix.mat4.rotateZ(
-            model_svn, model_svn, 0
-        );
-        gl.uniformMatrix4fv(uModel, false, model_svn);
-        gl.uniformMatrix4fv(uView, false, view);
-        gl.uniformMatrix4fv(uProjection, false, perspective);
-        gl.drawElements(gl.LINES, 64, gl.UNSIGNED_SHORT, 472);
+        // var model_svn = glMatrix.mat4.create(); // Membuat matriks identitas
+        // glMatrix.mat4.translate(
+        //     model_svn, model_svn, [-0.5, 0.0, 0.0]
+        // );
+        // glMatrix.mat4.scale(
+        //     model_svn, model_svn, [scaleX, scaleY, scaleZ]
+        // );
+        // glMatrix.mat4.rotateX(
+        //     model_svn, model_svn, 0
+        // );
+        // glMatrix.mat4.rotateY(
+        //     model_svn, model_svn, 0
+        // );
+        // glMatrix.mat4.rotateZ(
+        //     model_svn, model_svn, 0
+        // );
+        // gl.uniformMatrix4fv(uModel, false, model_svn);
+        // gl.uniformMatrix4fv(uView, false, view);
+        // gl.uniformMatrix4fv(uProjection, false, perspective);
+        // gl.drawElements(gl.LINES, 64, gl.UNSIGNED_SHORT, 472);
 
         // e
-        var model_e = glMatrix.mat4.create(); // Membuat matriks identitas
-        glMatrix.mat4.translate(
-            model_e, model_e, [0, 0, 0]
-        );
-        glMatrix.mat4.scale(
-            model_e, model_e, [1.2, 1.2, 1.2]
-        );
-        glMatrix.mat4.rotateX(
-            model_e, model_e, 0
-        );
-        glMatrix.mat4.rotateY(
-            model_e, model_e, thetaY
-        );
-        glMatrix.mat4.rotateZ(
-            model_e, model_e, 0
-        );
-        gl.uniformMatrix4fv(uModel, false, model_e);
-        gl.uniformMatrix4fv(uView, false, view);
-        gl.uniformMatrix4fv(uProjection, false, perspective);
-        gl.drawElements(gl.TRIANGLE_STRIP, 108, gl.UNSIGNED_SHORT, 600);
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 816);
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 828);
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 840);
+        // var model_e = glMatrix.mat4.create(); // Membuat matriks identitas
+        // glMatrix.mat4.translate(
+        //     model_e, model_e, [0, 0, 0]
+        // );
+        // glMatrix.mat4.scale(
+        //     model_e, model_e, [1.2, 1.2, 1.2]
+        // );
+        // glMatrix.mat4.rotateX(
+        //     model_e, model_e, 0
+        // );
+        // glMatrix.mat4.rotateY(
+        //     model_e, model_e, thetaY
+        // );
+        // glMatrix.mat4.rotateZ(
+        //     model_e, model_e, 0
+        // );
+        // gl.uniformMatrix4fv(uModel, false, model_e);
+        // gl.uniformMatrix4fv(uView, false, view);
+        // gl.uniformMatrix4fv(uProjection, false, perspective);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 108, gl.UNSIGNED_SHORT, 600);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 816);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 828);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 840);
 
-        gl.drawElements(gl.TRIANGLE_STRIP, 108, gl.UNSIGNED_SHORT, 852);
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1068);
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1080);
-        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1092);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 108, gl.UNSIGNED_SHORT, 852);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1068);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1080);
+        // gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1092);
 
-        // side face
-        gl.drawElements(gl.TRIANGLES, 228, gl.UNSIGNED_SHORT, 1104);
-        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1560);
-        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1608);
-        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1656);
+        // // side face
+        // gl.drawElements(gl.TRIANGLES, 228, gl.UNSIGNED_SHORT, 1104);
+        // gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1560);
+        // gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1608);
+        // gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 1656);
 
 
         // R
@@ -562,6 +616,27 @@ function main(){
         gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 2952);
         gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 3000);
         gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 3048);
+
+        var model_cube = glMatrix.mat4.create(); // Membuat matriks identitas
+        glMatrix.mat4.translate(
+            model_cube, model_cube, [0, 0, 0]
+        );
+        glMatrix.mat4.scale(
+            model_cube, model_cube, [4, 4, 4]
+        );
+        glMatrix.mat4.rotateX(
+            model_cube, model_cube, thetaX
+        );
+        glMatrix.mat4.rotateY(
+            model_cube, model_cube, 0
+        );
+        glMatrix.mat4.rotateZ(
+            model_cube, model_cube, 0
+        );
+        gl.uniformMatrix4fv(uModel, false, model_cube);
+        gl.uniformMatrix4fv(uView, false, view);
+        gl.uniformMatrix4fv(uProjection, false, perspective);
+        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 3096);
 
 
         requestAnimationFrame(render);
