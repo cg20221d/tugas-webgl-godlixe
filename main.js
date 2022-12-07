@@ -300,10 +300,14 @@ function main(){
         generateTriangleSideFacesIndex(indices_r, 212, 216, 66)
 
         var vertices_cubelight = [], d_vertices_cubelight = [], indices_cubelight = []
-        rectanglePoints(vertices_cubelight, 0.3, -3, 1, 0.4, 0.4, 0, 1, 0, 0, 0, 1)
-        modifyZPosition(vertices_cubelight, d_vertices_cubelight, 0, 4, 0.95)
-        modifyColor(vertices_cubelight, 0, 4, 0.930, 0.648, 0.279)
-        generateTriangleIndices(indices_cubelight, 282, 286)
+        rectanglePoints(vertices_cubelight, 0.0, 0.05, 1, 0.4, 0.4, 0, 1, 1, 0, 0, 1)
+        modifyZPosition(vertices_cubelight, d_vertices_cubelight, 0, 4, 0.6)
+        vertices_cubelight = vertices_cubelight.concat(d_vertices_cubelight)
+        modifyColor(vertices_cubelight, 0, 8, 1, 1, 1)
+        generateTriangleIndices(indices_cubelight, 282, 285)
+        generateTriangleIndices(indices_cubelight, 286, 289)
+        generateTriangleSideFacesIndex(indices_cubelight, 282, 286, 4)
+
         console.log(vertices_cubelight, indices_cubelight)
 
     
@@ -436,7 +440,7 @@ function main(){
     var uLightConstant = gl.getUniformLocation(shaderProgram, "uLightConstant");
     var uAmbientIntensity = gl.getUniformLocation(shaderProgram, "uAmbientIntensity");
     gl.uniform3fv(uLightConstant, [1.0, 1.0, 1.0]);   // warna sumber cahaya: oranye
-    gl.uniform1f(uAmbientIntensity, 1);               // intensitas cahaya: 40%
+    gl.uniform1f(uAmbientIntensity, 0.547);               // intensitas cahaya: 40%
     var uLightPosition = gl.getUniformLocation(shaderProgram, "uLightPosition");
     gl.uniform3fv(uLightPosition, [1.0, 0.0, 0.0]);
     var uNormalModel = gl.getUniformLocation(shaderProgram, "uNormalModel");
@@ -622,7 +626,7 @@ function main(){
             model_cube, model_cube, [0, 0, 0]
         );
         glMatrix.mat4.scale(
-            model_cube, model_cube, [4, 4, 4]
+            model_cube, model_cube, [2, 2, 2]
         );
         glMatrix.mat4.rotateX(
             model_cube, model_cube, thetaX
@@ -636,7 +640,11 @@ function main(){
         gl.uniformMatrix4fv(uModel, false, model_cube);
         gl.uniformMatrix4fv(uView, false, view);
         gl.uniformMatrix4fv(uProjection, false, perspective);
-        gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_SHORT, 3096);
+        // index
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 3096);
+        gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 3108);
+        // side faces
+        gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 3120);
 
 
         requestAnimationFrame(render);
