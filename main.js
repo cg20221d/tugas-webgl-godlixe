@@ -253,17 +253,17 @@ function main(){
         
         // R
         var vertices_r = []
-        rectanglePoints(vertices_r, 0.45, -1.35, 1, 0.04, 0.25, 0, 0.65, 1)
-        rectanglePoints(vertices_r, 0.5, -1.35, 1, -0.38, 0.03, 0, 0, 0)
-        rectanglePoints(vertices_r, 0.56, -1.35, 1, -0.38, 0.05, 0, 0, 0)
-        rectanglePoints(vertices_r, 0.45, -1.73, 1, 0.03, 0.25, 0, 0, 0)
+        rectanglePoints(vertices_r, 0.45, -1.35, 1, 0.04, 0.25, 0, 0.65, 1, 0, 0, 1)
+        rectanglePoints(vertices_r, 0.5, -1.35, 1, -0.38, 0.03, 0, 0, 0, 0, 0, 1)
+        rectanglePoints(vertices_r, 0.56, -1.35, 1, -0.38, 0.05, 0, 0, 0, 0, 0, 1)
+        rectanglePoints(vertices_r, 0.45, -1.73, 1, 0.03, 0.25, 0, 0, 0, 0, 0, 1)
         offset(vertices_r, -0.35, 1.08, 0, 16)
         
-        circlePoints(vertices_r, 0.35, -0.36, -0.09, -0.04, 90, 270, 1, 0, 0, 0) //38
+        circlePoints(vertices_r, 0.35, -0.36, -0.09, -0.04, 90, 270, 1, 0, 0, 1, 0, 0, 1) //38
         
-        rhombusPoints(vertices_r, 0.32, -0.47, 1, -0.18, 0.06, 0.13, 0, 0, 0)
-        rectanglePoints(vertices_r, 0.32, -0.45, 1, -0.02, 0.07, 0, 0, 0)
-        rectanglePoints(vertices_r, 0.45, -0.62, 1, -0.03, 0.06, 0, 0, 0)
+        rhombusPoints(vertices_r, 0.32, -0.47, 1, -0.18, 0.06, 0.13, 0, 0, 0, 0, 0, 1)
+        rectanglePoints(vertices_r, 0.32, -0.45, 1, -0.02, 0.07, 0, 0, 0, 0, 0, 1)
+        rectanglePoints(vertices_r, 0.45, -0.62, 1, -0.03, 0.06, 0, 0, 0, 0, 0, 1)
         
         modifyColor(vertices_r, 0, 66, 0.930, 0.648, 0.279)
 
@@ -300,7 +300,7 @@ function main(){
         generateTriangleSideFacesIndex(indices_r, 212, 216, 66)
 
         var vertices_cubelight = [], d_vertices_cubelight = [], indices_cubelight = []
-        rectanglePoints(vertices_cubelight, 0.0, 0.05, 1, 0.4, 0.4, 0, 1, 1, 0, 0, 1)
+        rectanglePoints(vertices_cubelight, 0.0, 0.05, 1, 0.4, 0.4, 0, 1, 1, 0, 0, -1)
         modifyZPosition(vertices_cubelight, d_vertices_cubelight, 0, 4, 0.6)
         vertices_cubelight = vertices_cubelight.concat(d_vertices_cubelight)
         modifyColor(vertices_cubelight, 0, 8, 1, 1, 1)
@@ -447,6 +447,8 @@ function main(){
     var uNormalModel = gl.getUniformLocation(shaderProgram, "uNormalModel");
     var uViewerPosition = gl.getUniformLocation(shaderProgram, "uViewerPosition");
     gl.uniform3fv(uViewerPosition, camera);
+    let uShininessConstant = gl.getUniformLocation(shaderProgram, "uShininessConstant");
+
     // gl.clearColor(0.1,      0.2,    0.1,    1.0);  // Oranye
     // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     // gl.clearColor(1.0, 1.0, 1.0, 1.0)
@@ -523,6 +525,9 @@ function main(){
         gl.uniformMatrix4fv(uModel, false, model);
         gl.uniformMatrix4fv(uView, false, view);
         gl.uniformMatrix4fv(uProjection, false, perspective);
+        var normalModel_4 = glMatrix.mat3.create();
+        glMatrix.mat3.normalFromMat4(normalModel_4, model);
+        gl.uniformMatrix3fv(uNormalModel, false, normalModel_4);
         gl.drawElements(gl.LINES, 112, gl.UNSIGNED_SHORT, 136);
         gl.drawElements(gl.LINES, 24, gl.UNSIGNED_SHORT, 360);
 
@@ -605,6 +610,15 @@ function main(){
         gl.uniformMatrix4fv(uModel, false, model_r);
         gl.uniformMatrix4fv(uView, false, view);
         gl.uniformMatrix4fv(uProjection, false, perspective);
+
+        gl.uniform3fv(uLightConstant, [1.0, 1.0, 1.0]);
+        gl.uniform1f(uAmbientIntensity, 0.547);
+        gl.uniform1f(uShininessConstant, 100);
+        gl.uniform3fv(uLightPosition, cubeTranslation); 
+
+        var normalModel_r = glMatrix.mat3.create();
+        glMatrix.mat3.normalFromMat4(normalModel_r, model_r);
+        gl.uniformMatrix3fv(uNormalModel, false, normalModel_r);
         gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1704);
         gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1716);
         gl.drawElements(gl.TRIANGLE_STRIP, 6, gl.UNSIGNED_SHORT, 1728);
