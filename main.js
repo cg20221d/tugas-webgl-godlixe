@@ -440,14 +440,11 @@ function main(){
 
     var uLightConstant = gl.getUniformLocation(shaderProgram, "uLightConstant");
     var uAmbientIntensity = gl.getUniformLocation(shaderProgram, "uAmbientIntensity");
-    gl.uniform3fv(uLightConstant, [1.0, 1.0, 1.0]);   // warna sumber cahaya: oranye
-    gl.uniform1f(uAmbientIntensity, 0.547);               // intensitas cahaya: 40%
     var uLightPosition = gl.getUniformLocation(shaderProgram, "uLightPosition");
-    gl.uniform3fv(uLightPosition, cubeTranslation);
     var uNormalModel = gl.getUniformLocation(shaderProgram, "uNormalModel");
     var uViewerPosition = gl.getUniformLocation(shaderProgram, "uViewerPosition");
-    gl.uniform3fv(uViewerPosition, camera);
     let uShininessConstant = gl.getUniformLocation(shaderProgram, "uShininessConstant");
+    gl.uniform3fv(uViewerPosition, camera);
 
     // gl.clearColor(0.1,      0.2,    0.1,    1.0);  // Oranye
     // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -525,6 +522,12 @@ function main(){
         gl.uniformMatrix4fv(uModel, false, model);
         gl.uniformMatrix4fv(uView, false, view);
         gl.uniformMatrix4fv(uProjection, false, perspective);
+
+        gl.uniform3fv(uLightConstant, [1.0, 1.0, 1.0]);
+        gl.uniform1f(uAmbientIntensity, 0.547);
+        gl.uniform1f(uShininessConstant, 10);
+        gl.uniform3fv(uLightPosition, cubeTranslation); 
+
         var normalModel_4 = glMatrix.mat3.create();
         glMatrix.mat3.normalFromMat4(normalModel_4, model);
         gl.uniformMatrix3fv(uNormalModel, false, normalModel_4);
